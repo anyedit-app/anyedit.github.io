@@ -41,7 +41,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/anyedit.git
+git clone https://github.com/anyedit-app/anyedit.github.io/anyedit.git
 cd anyedit
 
 # Build and create DMG
@@ -145,12 +145,9 @@ anyedit automatically adjusts beat detection based on:
 xcode-select --install  # Install Xcode Command Line Tools
 
 # Clone and build
-git clone https://github.com/your-username/anyedit.git
+git clone https://github.com/anyedit-app/anyedit.github.io/anyedit.git
 cd anyedit
 swift build --configuration release
-
-# Create distributable DMG
-./build_dmg.sh
 ```
 
 ### Project Structure
