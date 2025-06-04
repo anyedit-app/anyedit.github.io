@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>anyedit - AI-Powered Video Editing for macOS</title>
+    <meta name="description" content="Revolutionary AI-powered video editing that synchronizes your videos to music beats automatically. Simply drag, drop, and let AI create magic.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="anyedit - AI-Powered Video Editing">
+    <meta property="og:description" content="Revolutionary AI video editing that syncs to music beats automatically">
+    <meta property="og:image" content="./interface.png">
+    <meta property="og:url" content="https://your-username.github.io/anyedit">
+    <meta property="og:type" content="website">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="anyedit - AI-Powered Video Editing">
+    <meta name="twitter:description" content="Revolutionary AI video editing that syncs to music beats automatically">
+    <meta name="twitter:image" content="./interface.png">
+    
+    <link rel="icon" type="image/x-icon" href="./logo.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #007AFF;
+            --secondary: #5856D6;
+            --accent: #FF3B30;
+            --success: #30D158;
+            --warning: #FF9500;
+            --background: #000000;
+            --surface: #1C1C1E;  
+            --card: #2C2C2E;
+            --text-primary: #FFFFFF;
+            --text-secondary: #8E8E93;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --glass: rgba(255, 255, 255, 0.1);
+            --blur: blur(20px);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Animated background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 118, 117, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(72, 219, 251, 0.3) 0%, transparent 50%);
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        }
+        
+        /* Glassmorphism containers */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            z-index: 1000;
+            backdrop-filter: var(--blur);
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .logo img {
+            width: 32px;
+            height: 32px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+        
+        .download-btn {
+            background: var(--gradient-1);
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .github-btn {
+            background: #21262d;
+            border: 1px solid #30363d;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #f0f6fc;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .github-btn:hover {
+            background: #30363d;
+            border-color: #8b949e;
+            transform: translateY(-1px);
+        }
+        
+        .github-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 20px 60px;
+        }
+        
+        .hero-content h1 {
+            font-size: clamp(3rem, 8vw, 8rem);
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 24px;
+            line-height: 1.1;
+        }
+        
+        .hero-content .subtitle {
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+        
+        .btn {
+            padding: 16px 32px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-1);
+            color: white;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--glass);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: var(--blur);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Demo Video */
+        .demo-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        .demo-video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        .video-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+        
+        .sound-toggle {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            outline: none;
+            padding: 0;
+        }
+        
+        .sound-toggle:hover {
+            background: rgba(0, 0, 0, 0.8);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+        
+        .sound-toggle.muted {
+            background: rgba(255, 59, 48, 0.7);
+            border-color: rgba(255, 59, 48, 0.4);
+        }
+        
+        .sound-toggle.muted:hover {
+            background: rgba(255, 59, 48, 0.8);
+        }
+        
+        .sound-icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 120px 20px;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 60px;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+        
+        .feature-card {
+            padding: 40px;
+            border-radius: 24px;
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .feature-card h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        /* Interface Preview */
+        .interface-preview {
+            padding: 120px 20px;
+            text-align: center;
+        }
+        
+        .interface-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            margin-top: 40px;
+        }
+        
+        /* Stats Section */
+        .stats {
+            padding: 80px 20px;
+            background: var(--glass);
+            backdrop-filter: var(--blur);
+            margin: 60px 20px;
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+        
+        .stat-item h3 {
+            font-size: 48px;
+            font-weight: 800;
+            background: var(--gradient-3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .stat-item p {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 60px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .footer p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav {
+                position: relative;
+                top: 0;
+                left: 0;
+                right: 0;
+                margin: 20px;
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .nav div {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+            
+            .nav .github-btn,
+            .nav .download-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .hero {
+                padding-top: 140px;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Selection styling */
+        ::selection {
+            background: rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="logo">
+            <img src="logo.png" alt="anyedit logo">
+            <span>anyedit</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#preview">Preview</a></li>
+            <li><a href="#download">Download</a></li>
+        </ul>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <a href="https://github.com/your-username/anyedit" class="github-btn" target="_blank" rel="noopener">
+                <svg class="github-icon" viewBox="0 0 24 24">
+                    <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                </svg>
+                View on GitHub
+            </a>
+            <a href="#download" class="download-btn">
+                Download for macOS
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>anyedit</h1>
+                <p class="subtitle">AI-Powered Video Editing for macOS</p>
+                <p style="color: var(--text-secondary); font-size: 1.2rem; margin-bottom: 40px;">
+                    Revolutionary video editing that synchronizes your content to music beats automatically.<br>
+                    Simply drag, drop, and let AI create magic.
+                </p>
+                
+                <div class="hero-cta">
+                    <a href="#download" class="btn btn-primary">
+                        📱 Download for macOS
+                    </a>
+                    <a href="#features" class="btn btn-secondary">
+                        ✨ See Features
+                    </a>
+                </div>
+                
+                <div class="demo-container">
+                    <video class="demo-video" autoplay muted loop playsinline id="demoVideo">
+                        <source src="demo.mp4" type="video/mp4">
+                        Your browser doesn't support video playback.
+                    </video>
+                    <div class="video-controls">
+                        <button class="sound-toggle muted" id="soundToggle" aria-label="Toggle sound">
+                            <svg class="sound-icon" viewBox="0 0 24 24" id="mutedIcon">
+                                <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+                            </svg>
+                            <svg class="sound-icon" viewBox="0 0 24 24" id="unmutedIcon" style="display: none;">
+                                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Intelligent Video Editing</h2>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🤖</span>
+                    <h3>AI Beat Detection</h3>
+                    <p>Advanced audio analysis that detects beats, drops, and musical phrases with machine learning precision.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🎬</span>
+                    <h3>Smart Scene Selection</h3>
+                    <p>AI analyzes video content to select the most engaging moments and creates coherent visual flow.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h3>Perfect Synchronization</h3>
+                    <p>Automatic timing between video cuts and audio beats creates professional-quality synchronized content.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🎵</span>
+                    <h3>Mood Recognition</h3>
+                    <p>Detects emotional tone and musical patterns to match video segments with audio energy levels.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🌈</span>
+                    <h3>Smart Transitions</h3>
+                    <p>Intelligent cut, crossfade, zoom, and flash effects applied based on audio and visual context.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🖥️</span>
+                    <h3>Modern Interface</h3>
+                    <p>Beautiful macOS-native interface with drag-and-drop simplicity and real-time preview.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Interface Preview -->
+    <section id="preview" class="interface-preview">
+        <div class="container">
+            <h2 class="section-title">Beautiful, Intuitive Design</h2>
+            <p style="color: var(--text-secondary); font-size: 1.2rem; max-width: 600px; margin: 0 auto;">
+                Designed for creators who want powerful AI without complexity. 
+                Drop your files and watch the magic happen.
+            </p>
+            <img src="interface.png" alt="anyedit interface" class="interface-image">
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <h3>6971</h3>
+                    <p>Beats Detected</p>
+                </div>
+                <div class="stat-item">
+                    <h3>628</h3>
+                    <p>Scenes Analyzed</p>
+                </div>
+                <div class="stat-item">
+                    <h3>20s</h3>
+                    <p>Perfect Videos</p>
+                </div>
+                <div class="stat-item">
+                    <h3>100%</h3>
+                    <p>AI Magic</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Download Section -->
+    <section id="download" class="hero" style="min-height: 80vh;">
+        <div class="container">
+            <div class="hero-content">
+                <h2 style="font-size: clamp(2rem, 5vw, 4rem); margin-bottom: 30px;">
+                    Ready to Create?
+                </h2>
+                <p style="color: var(--text-secondary); font-size: 1.3rem; margin-bottom: 40px; max-width: 600px; margin-left: auto; margin-right: auto;">
+                    Download anyedit for macOS and start creating AI-synchronized videos in minutes.
+                </p>
+                
+                <div class="hero-cta">
+                    <a href="dist/anyedit_v1.0.0.dmg" class="btn btn-primary" style="font-size: 20px; padding: 20px 40px;">
+                        📥 Download anyedit v1.0.0
+                    </a>
+                </div>
+                
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 20px;">
+                    Requires macOS 13.0 or later • Apple Silicon & Intel supported • 836KB download
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 anyedit. Made with ❤️ and AI in San Francisco.</p>
+                <p style="font-style: italic; margin-top: 10px;">Where creativity meets artificial intelligence</p>
+                
+                <div class="footer-links">
+                    <a href="README.md">Documentation</a>
+                    <a href="LICENSE">License</a>
+                    <a href="https://github.com/your-username/anyedit">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add loading animation for demo video
+        const video = document.querySelector('.demo-video');
+        if (video) {
+            video.addEventListener('loadstart', () => {
+                video.style.opacity = '0.5';
+            });
+            video.addEventListener('canplay', () => {
+                video.style.opacity = '1';
+                video.style.transition = 'opacity 0.5s ease';
+            });
+        }
+        
+        // Parallax effect for background
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const bg = document.querySelector('.bg-animation');
+            if (bg) {
+                bg.style.transform = `translateY(${scrolled * 0.1}px)`;
+            }
+        });
+        
+        // Initialize video sound toggle functionality when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('demoVideo');
+            const soundToggle = document.getElementById('soundToggle');
+            const mutedIcon = document.getElementById('mutedIcon');
+            const unmutedIcon = document.getElementById('unmutedIcon');
+            
+            console.log('Video element:', video);
+            console.log('Sound toggle button:', soundToggle);
+            
+            if (video && soundToggle) {
+                soundToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Sound toggle clicked, current muted state:', video.muted);
+                    
+                    if (video.muted) {
+                        // Unmute the video
+                        video.muted = false;
+                        soundToggle.classList.remove('muted');
+                        if (mutedIcon) mutedIcon.style.display = 'none';
+                        if (unmutedIcon) unmutedIcon.style.display = 'block';
+                        soundToggle.setAttribute('aria-label', 'Mute sound');
+                        console.log('Video unmuted');
+                    } else {
+                        // Mute the video
+                        video.muted = true;
+                        soundToggle.classList.add('muted');
+                        if (mutedIcon) mutedIcon.style.display = 'block';
+                        if (unmutedIcon) unmutedIcon.style.display = 'none';
+                        soundToggle.setAttribute('aria-label', 'Unmute sound');
+                        console.log('Video muted');
+                    }
+                });
+                console.log('Sound toggle event listener attached');
+            } else {
+                console.error('Video or sound toggle button not found');
+            }
+        });
+    </script>
+</body>
+</html> 
