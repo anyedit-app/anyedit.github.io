@@ -4,7 +4,7 @@
 
 **anyedit** is a revolutionary video editing application that uses artificial intelligence to automatically create stunning videos synchronized to music. Simply drag in your video and audio files, and let AI do the magic!
 
-![anyedit demo](/demo.mp4)
+![anyedit demo](/interface.png)
 
 ## ✨ Features
 
